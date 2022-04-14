@@ -1,24 +1,22 @@
-let
-  version = "2.1.50";
-  qt-version = "6";
-  pname = "bb-anki";
-  full-version = "${version}-qt${qt-version}";
-in {
+{
+  description = "An attempt at packaging `anki` 2.1.50 with Qt6";
+
   inputs = {
+    nixpkgs.url = github:nixos/nixpkgs/nixos-unstable;
     anki = {
-      src = "https://github.com/ankitects/anki/releases/download/${version}/anki-${version}-linux-qt${qt-version}.tar.zst";
+      url = "https://github.com/ankitects/anki/releases/download/2.1.50/anki-2.1.50-linux-qt6.tar.zst";
       flake = false;
     };
-    nixpkgs.url = github:nixos/nixpkgs-unstable;
   };
 
-  outputs = { anki, nixpkgs }: {
+  outputs = { self, anki, nixpkgs }: {
     defaultPackage.x86_64-linux =
       let
-        inherit (nixpkgs) buildFHSUserEnv appimageTools writeShellScript stdenv;
+        actualNixpkgs = import nixpkgs { system = "x86_64-linux"; };
+        inherit (actualNixpkgs) buildFHSUserEnv appimageTools writeShellScript stdenv;
         unpacked = stdenv.mkDerivation {
-          inherit pname;
-          version = full-version;
+          pname = "anki-bb";
+          version = "2.1.50-qt6";
           src = anki;
 
           installPhase = ''
