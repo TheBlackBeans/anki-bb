@@ -35,6 +35,7 @@
           inherit passthru;
           name = "anki";
           runScript = writeShellScript "anki-wrapper.sh" ''
+            export DISABLE_QT5_COMPAT=1
             exec ${unpacked}/bin/anki
           '';
 
